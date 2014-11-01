@@ -9,5 +9,6 @@ setup(
     author='Nitori Kawashiro',
     author_email='nitori@chireiden.net',
     packages=['urlfetcher', 'urlfetcher.fetchers'],
-    scripts=['fetch-url-title']
+    scripts=['fetch-url-title'],
+    requires=['requests', 'enzyme', 'Pillow', 'beautifulsoup4'],
 )

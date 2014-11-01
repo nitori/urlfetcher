@@ -20,7 +20,6 @@ if __name__ == '__main__':
         result = urlfetcher.fetcher.fetch(url)
     except Exception as e:
         logging.exception(e)
-        raise
         print('{}: {!s} (maybe corrupt or to big)'.format(type(e).__name__, e))
     else:
         print(result)
