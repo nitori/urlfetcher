@@ -1,0 +1,7 @@
+
+.idea/
+build/
+*.pyc
+
+danbooru_data.py
+
