@@ -113,6 +113,11 @@ def fetch(url, head):
     if mkv.info.title is not None:
         collect.append('Title: {}'.format(mkv.info.title))
 
+    if content_length is not None:
+        collect.append('Size: {}'.format(utils.format_size(content_length)))
+    else:
+        collect.append('Unknown file size')
+
     if mkv.info.duration is not None:
         collect.append('Duration: {}'.format(
             utils.format_duration(mkv.info.duration.seconds)))
