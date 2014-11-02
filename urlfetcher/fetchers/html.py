@@ -22,7 +22,7 @@ def fetch(url, head):
         url,
         timeout=5,
         headers={'User-Agent': USER_AGENT})
-    soup = bs4.BeautifulSoup(response.text)
+    soup = bs4.BeautifulSoup(response.content)
     title = soup.title
     if title is not None:
         page_title = ' '.join(title.text.split())
