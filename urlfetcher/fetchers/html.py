@@ -22,7 +22,10 @@ def fetch(url, head):
         url,
         timeout=5,
         headers={'User-Agent': USER_AGENT})
-    soup = bs4.BeautifulSoup(response.content)
+    if 'charset' not in content_type.lower():
+        soup = bs4.BeautifulSoup(response.content)
+    else:
+        soup = bs4.BeautifulSoup(response.text)
     title = soup.title
     if title is not None:
         page_title = ' '.join(title.text.split())
