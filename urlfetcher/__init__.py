@@ -6,6 +6,8 @@ import re
 import requests
 from types import GeneratorType
 
+USER_AGENT = 'Shanghai IRC Bot'
+
 
 class Fetcher:
     CATCH = 1
@@ -23,7 +25,7 @@ class Fetcher:
 
     @classmethod
     def fetch(cls, url):
-        response = requests.head(url)
+        response = requests.head(url, headers={'User-Agent': USER_AGENT})
         for urlpattern, func in cls._fetcher_registry:
             gen = None
             if urlpattern is None:

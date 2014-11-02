@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 
 import bs4
 import requests
-from . import fetcher, utils
+from . import fetcher, utils, USER_AGENT
 
 MAX_SEEK_SIZE = 64 << 10
 
@@ -18,7 +18,10 @@ def fetch(url, head):
         yield False
         return
 
-    response = requests.get(url, timeout=5)
+    response = requests.get(
+        url,
+        timeout=5,
+        headers={'User-Agent': USER_AGENT})
     soup = bs4.BeautifulSoup(response.text)
     title = soup.title
     if title is not None:
