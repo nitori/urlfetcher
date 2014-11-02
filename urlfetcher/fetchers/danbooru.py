@@ -9,10 +9,10 @@ from . import fetcher
 # you might need to create this, if you want to access
 # non-public data.
 try:
-    from .danbooru_data import LOGIN, API_KEY
+    from ..secrets import DANBOORU_LOGIN, DANBOORU_API_KEY
 except ImportError:
-    LOGIN = None
-    API_KEY = None
+    DANBOORU_LOGIN = None
+    DANBOORU_API_KEY = None
 
 WARNING_TAGS = (
     'yuri', 'yaoi', 'loli', 'shota', 'futanari', 'futa',
@@ -31,8 +31,8 @@ def fetch(url, head):
 
     api_url = urlunsplit(newurlp)
 
-    if LOGIN is not None and API_KEY is not None:
-        response = requests.get(api_url, auth=(LOGIN, API_KEY))
+    if DANBOORU_LOGIN is not None and DANBOORU_API_KEY is not None:
+        response = requests.get(api_url, auth=(DANBOORU_LOGIN, DANBOORU_API_KEY))
     else:
         response = requests.get(api_url)
     if response.ok:

@@ -6,7 +6,9 @@ import re
 import requests
 from types import GeneratorType
 
-USER_AGENT = 'Shanghai IRC Bot'
+__version__ = (1, 1)
+USER_AGENT = 'Shanghai/{} by LarryPete'.format(
+    '.'.join(str(v) for v in __version__))
 
 
 class Fetcher:

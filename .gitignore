@@ -3,5 +3,5 @@
 build/
 *.pyc
 
-danbooru_data.py
+secrets.py
 
