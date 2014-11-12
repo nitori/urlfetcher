@@ -101,8 +101,8 @@ def fetch(url, head):
             warn_for.append(tag)
 
     if warn_for:
-        collect.append('Warning: \x02{}\x02'.format(
-            ', '.join('\x0304{}\x0F'.format(tag) for tag in warn_for)))
+        collect.append('Warning: {}'.format(
+            ', '.join('\x0304\x02{}\x0F'.format(tag) for tag in warn_for)))
 
     if file_url is not None:
         collect.append(urljoin(url, file_url))
