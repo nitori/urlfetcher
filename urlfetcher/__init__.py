@@ -27,7 +27,11 @@ class Fetcher:
 
     @classmethod
     def fetch(cls, url):
-        response = requests.head(url, headers={'User-Agent': USER_AGENT})
+        response = requests.head(url, headers={'User-Agent': USER_AGENT},
+                                 allow_redirects=True)
+        redirected_to = None
+        if response.history:
+            redirected_to = response.url
         for urlpattern, func in cls._fetcher_registry:
             gen = None
             if urlpattern is None:
@@ -51,6 +55,14 @@ class Fetcher:
                     if not isinstance(result, str):
                         raise TypeError('Expected type {} not {}'.format(
                             str, type(result)))
+
+                    if redirected_to is not None:
+                        if len(redirected_to) <= 150:
+                            result = '{} | \x02Redirect\x02: {}'\
+                                .format(result, redirected_to)
+                        else:
+                            result = '{} | \x02Redirect\x02 (URL to long)'\
+                                .format(result)
                     return result
 
 
