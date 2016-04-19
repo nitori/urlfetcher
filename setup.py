@@ -10,5 +10,5 @@ setup(
     author_email='nitori@chireiden.net',
     packages=['urlfetcher', 'urlfetcher.fetchers'],
     scripts=['fetch-url-title'],
-    requires=['requests', 'enzyme', 'Pillow', 'beautifulsoup4'],
+    install_requires=['requests', 'enzyme', 'Pillow', 'beautifulsoup4'],
 )
