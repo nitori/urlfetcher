@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 
 import bs4
 import requests
-from . import fetcher, utils, USER_AGENT
+from . import fetcher, utils, USER_AGENT, TIMEOUT
 
 MAX_SEEK_SIZE = 64 << 10
 
@@ -20,7 +20,7 @@ def fetch(url, head):
 
     response = requests.get(
         url,
-        timeout=5,
+        timeout=TIMEOUT,
         headers={'User-Agent': USER_AGENT})
     if 'charset' not in content_type.lower():
         soup = bs4.BeautifulSoup(response.content)

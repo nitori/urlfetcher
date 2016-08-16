@@ -9,6 +9,7 @@ from types import GeneratorType
 __version__ = (1, 1)
 USER_AGENT = 'Shanghai/{} by LarryPete'.format(
     '.'.join(str(v) for v in __version__))
+TIMEOUT = 3
 
 
 class Fetcher:
@@ -28,7 +29,7 @@ class Fetcher:
     @classmethod
     def fetch(cls, url):
         response = requests.head(url, headers={'User-Agent': USER_AGENT},
-                                 allow_redirects=True)
+                                 allow_redirects=True, timeout=TIMEOUT)
         redirected_to = None
         if response.history:
             redirected_to = response.url

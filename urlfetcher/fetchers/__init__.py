@@ -1,6 +1,6 @@
 __author__ = 'Nitori'
 
-from .. import fetcher, utils, USER_AGENT
+from .. import fetcher, utils, USER_AGENT, TIMEOUT
 
 # order matters. first match will be used
 from . import danbooru
