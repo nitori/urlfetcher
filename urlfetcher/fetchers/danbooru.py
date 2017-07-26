@@ -14,7 +14,9 @@ except ImportError:
 
 WARNING_TAGS = (
     'yuri', 'yaoi', 'loli', 'shota', 'futanari', 'futa',
-    'tentacles', 'guro'
+    'tentacles', 'guro', 'nude',
+    'naked_apron', 'naked_shirt', 'naked_towel',
+    'naked_ribbon', 'naked_sheet', 'naked_sweater',
 )
 
 
@@ -91,7 +93,7 @@ def fetch(url, head):
 
     if rating != 's':
         collect.append('Rating: {}'.format(
-            'explicit' if rating == 'e' else 'questionable'))
+            'explicit (\x02NSFW\x02)' if rating == 'e' else 'questionable (\x02possibly NSFW\x02)'))
 
     warn_for = []
     for tag in WARNING_TAGS:
@@ -102,8 +104,8 @@ def fetch(url, head):
         collect.append('Warning: {}'.format(
             ', '.join('\x0304\x02{}\x0F'.format(tag) for tag in warn_for)))
 
-    if file_url is not None:
-        collect.append(urljoin(url, file_url))
+    # if file_url is not None:
+    #     collect.append(urljoin(url, file_url))
 
     return '\x02danbooru:\x02 ' + (' | '.join(collect))
 
