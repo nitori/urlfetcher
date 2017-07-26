@@ -175,7 +175,7 @@ def fetch(url, head):
         likes = int(likes)
         total = dislikes + likes
         r = likes / total
-        lcount = int(r*20)
+        lcount = int(round(r*20))
         dcount = 20-lcount
         parts.append('Rating: {}{}'.format('♥'*lcount, '♡'*dcount))
 
