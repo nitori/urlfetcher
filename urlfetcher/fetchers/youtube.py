@@ -162,13 +162,13 @@ def fetch(url, head):
                 minutes = 0
             if seconds is None:
                 seconds = 0
-            duration_str = '{:02d}:{:02d}'.format(minutes, seconds)
+            duration_str = '{:02d}:{:02d}'.format(int(minutes), int(seconds))
             if hours is not None:
                 duration_str = '{}:{}'.format(hours, duration_str)
             parts.append(duration_str)
 
     if views is not None:
-        parts.append(views)
+        parts.append('Views: {}'.format(views))
 
     if dislikes is not None and likes is not None:
         dislikes = int(dislikes)
@@ -177,7 +177,7 @@ def fetch(url, head):
         r = likes / total
         lcount = int(r*20)
         dcount = 20-lcount
-        parts.append('{}{}'.format('#'*lcount, '.'*dcount))
+        parts.append('Rating: {}{}'.format('#'*lcount, '.'*dcount))
 
     return '\x02YouTube:\x02 ' + (' | '.join(str(part) for part in parts))
 
