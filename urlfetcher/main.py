@@ -13,7 +13,7 @@ logging.basicConfig(
     filename=os.path.expanduser('~/.logs/urlfetcher.log'))
 
 
-if __name__ == '__main__':
+def main():
     url = sys.argv[1]
     logging.info('Retrieving url {}'.format(url))
     try:

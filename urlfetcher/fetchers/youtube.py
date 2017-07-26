@@ -1,11 +1,8 @@
-__author__ = 'Nitori'
-
 from urllib.parse import urlparse, parse_qs
+import re
 import requests
-from . import fetcher, utils
-
-
-YOUTUBE_API_URI = 'http://gdata.youtube.com/feeds/api/videos/{video_id}?alt=json'
+from .. import fetcher, utils
+from ..secrets import YOUTUBE_API_KEY
 
 
 @fetcher(urlpattern=r'https?://(www\.)?(youtube\.com|youtu\.be)(/.*)?$')
@@ -28,55 +25,161 @@ def fetch(url, head):
             if video_ids:
                 video_id = video_ids.pop(0)
 
-    response = None
+    apiurl = 'https://www.googleapis.com/youtube/v3/videos'
+
     if video_id is not None:
-        api_url = YOUTUBE_API_URI.format(video_id=video_id)
-        response = requests.get(api_url)
+        response = requests.get(apiurl, params=dict(
+            id=video_id,
+            key=YOUTUBE_API_KEY,
+            part='snippet,contentDetails,statistics,status'
+        ))
         if response.ok:
-            yield True
+            data = response.json()
+            if 'items' in data and data['items']:
+                yield True
+            else:
+                yield False
+                return
         else:
             yield False
             return
     else:
         yield False
         return
+    """
+{
+    "items": [
+        {
+            "etag": "\"m2yskBQFythfE4irbTIeOgYYfBU/wfGMwi_ohSxnfEMaO6fCz3G45SU\"",
+            "kind": "youtube#video",
+            "status": {
+                "privacyStatus": "public",
+                "license": "youtube",
+                "uploadStatus": "processed",
+                "embeddable": true,
+                "publicStatsViewable": true
+            },
+            "snippet": {
+                "liveBroadcastContent": "none",
+                "thumbnails": {
+                    "high": {
+                        "url": "https://i.ytimg.com/vi/m1cMUC0IeB8/hqdefault.jpg",
+                        "width": 480,
+                        "height": 360
+                    },
+                    "standard": {
+                        "url": "https://i.ytimg.com/vi/m1cMUC0IeB8/sddefault.jpg",
+                        "width": 640,
+                        "height": 480
+                    },
+                    "default": {
+                        "url": "https://i.ytimg.com/vi/m1cMUC0IeB8/default.jpg",
+                        "width": 120,
+                        "height": 90
+                    },
+                    "medium": {
+                        "url": "https://i.ytimg.com/vi/m1cMUC0IeB8/mqdefault.jpg",
+                        "width": 320,
+                        "height": 180
+                    }
+                },
+                "tags": [
+                    "interesting",
+                    "funny",
+                    "comedy",
+                    "hilarious",
+                    "current events",
+                    "politics"
+                ],
+                "channelTitle": "Sargon of Akkad",
+                "title": "The Unquestionable Idea",
+                "channelId": "UC-yewGHQbNFpDrGM0diZOLA",
+                "description": "We must not allow the regressive left to define Islam as an idea that is above scrutiny.\n\nPrevious video about Richard Dawkins' deplatforming: https://www.youtube.com/watch?v=W1bI7S0LCos\n\nSocial Media\n\nMinds: https://www.minds.com/Sargon_of_Akkad\nFacebook: https://www.facebook.com/sargonofakkad100/\nTwitter: https://twitter.com/Sargon_of_Akkad\nReddit: https://www.reddit.com/r/SargonofAkkad/\n\nCredits and Sources\n\nIntro animation: Undoomed https://www.youtube.com/channel/UCTrecbx23AAYdmFHDkci0aQ\nOutro Music: https://www.youtube.com/watch?v=etDon1LH1vA\n\nSources: https://www.minds.com/blog/view/736947017346981894",
+                "publishedAt": "2017-07-26T14:06:28.000Z",
+                "localized": {
+                    "description": "We must not allow the regressive left to define Islam as an idea that is above scrutiny.\n\nPrevious video about Richard Dawkins' deplatforming: https://www.youtube.com/watch?v=W1bI7S0LCos\n\nSocial Media\n\nMinds: https://www.minds.com/Sargon_of_Akkad\nFacebook: https://www.facebook.com/sargonofakkad100/\nTwitter: https://twitter.com/Sargon_of_Akkad\nReddit: https://www.reddit.com/r/SargonofAkkad/\n\nCredits and Sources\n\nIntro animation: Undoomed https://www.youtube.com/channel/UCTrecbx23AAYdmFHDkci0aQ\nOutro Music: https://www.youtube.com/watch?v=etDon1LH1vA\n\nSources: https://www.minds.com/blog/view/736947017346981894",
+                    "title": "The Unquestionable Idea"
+                },
+                "categoryId": "25"
+            },
+            "statistics": {
+                "dislikeCount": "100",
+                "commentCount": "3490",
+                "likeCount": "11013",
+                "viewCount": "100008",
+                "favoriteCount": "0"
+            },
+            "id": "m1cMUC0IeB8",
+            "contentDetails": {
+                "caption": "false",
+                "definition": "hd",
+                "dimension": "2d",
+                "licensedContent": true,
+                "duration": "PT13M29S",
+                "projection": "rectangular"
+            }
+        }
+    ],
+    "pageInfo": {
+        "resultsPerPage": 1,
+        "totalResults": 1
+    },
+    "etag": "\"m2yskBQFythfE4irbTIeOgYYfBU/Mpy2xjODDHYx_RRiyl_ysGqIprs\"",
+    "kind": "youtube#videoListResponse"
+}
 
-    data = response.json()
+    """
+    def get(d, path):
+        current = d
+        for p in path.split('.'):
+            try:
+                current = current[p]
+            except KeyError:
+                return None
+        return current
 
-    entry = data.get('entry', {})
+    item = data['items'][0]
+    channel = get(item, 'snippet.channelTitle')
+    title = get(item, 'snippet.title')
+    duration = get(item, 'contentDetails.duration')
+    dislikes = get(item, 'statistics.dislikeCount')
+    likes = get(item, 'statistics.likeCount')
+    views = get(item, 'statistics.viewCount')
 
-    title = entry.get('title', {}).get('$t', '')
-    title = ' '.join(title.split())
+    parts = []
 
-    authors = entry.get('author', [])
-    author = ''
-    if authors:
-        author = authors[0].get('name', {}).get('$t', '')
-        author = ' '.join(author.split())
+    if channel is not None:
+        parts.append(channel)
+    if title is not None:
+        parts.append(title)
 
-    rating = entry.get('gd$rating', {}).get('average', None)
-    viewcount = entry.get('yt$statistics', {}).get('viewCount', None)
-    duration = entry.get('media$group', {}).get('yt$duration', {}).get('seconds', None)
+    if duration is not None:
+        # PT13M29S
+        m = re.match('^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$', duration)
+        if m is not None:
+            hours, minutes, seconds = m.groups()
+            if minutes is None:
+                minutes = 0
+            if seconds is None:
+                seconds = 0
+            duration_str = '{:02d}:{:02d}'.format(minutes, seconds)
+            if hours is not None:
+                duration_str = '{}:{}'.format(hours, duration_str)
+            parts.append(duration_str)
 
-    collect = []
+    if views is not None:
+        parts.append(views)
 
-    if title:
-        collect.append(title)
+    if dislikes is not None and likes is not None:
+        dislikes = int(dislikes)
+        likes = int(likes)
+        total = dislikes + likes
+        r = likes / total
+        lcount = int(r*20)
+        dcount = 20-lcount
+        parts.append('{}{}'.format('#'*lcount, '.'*dcount))
 
-    if author:
-        collect.append('by ' + author)
-
-    if duration:
-        duration = int(duration)
-        collect.append('duration: {}'.format(utils.format_duration(duration)))
-
-    if viewcount:
-        collect.append('{} views'.format(int(viewcount)))
-
-    if rating:
-        collect.append('rating: {:.1f}'.format(float(rating)))
-
-    return '\x02YouTube:\x02 ' + (' | '.join(collect))
+    return '\x02YouTube:\x02 ' + (' | '.join(str(part) for part in parts))
 
 
 

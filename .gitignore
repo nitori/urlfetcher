@@ -1,7 +1,9 @@
 
 .idea/
 build/
-*.pyc
+*.py[co]
+__pycache__/
+*.egg-info/
 
 secrets.py
 

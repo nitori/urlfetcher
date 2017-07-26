@@ -1,10 +1,8 @@
-__author__ = 'Nitori'
-
 from urllib.parse import urlsplit, urlunsplit, urljoin
 
 import requests
 
-from . import fetcher
+from .. import fetcher
 
 # you might need to create this, if you want to access
 # non-public data.

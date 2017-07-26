@@ -1,13 +1,11 @@
-__author__ = 'Nitori'
+import math
 
 
 def format_size(size):
     prefixes = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB']
-    scale = 1024
-    for i, prefix in enumerate(prefixes):
-        if size < scale**(i+1):
-            return '{:.1f} {}'.format(size/(scale**i), prefix)
-    return '{:.1f} {}'.format(size/(scale**i), prefix)
+    exp = int(math.log(size, 1024))
+    exp = min(exp, len(prefixes) - 1)
+    return '{:.1f} {}'.format(size/(1024**exp), prefixes[exp])
 
 
 def format_duration(seconds):

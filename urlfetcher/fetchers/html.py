@@ -1,10 +1,6 @@
-__author__ = 'Nitori'
-
-from urllib.parse import urljoin
-
 import bs4
 import requests
-from . import fetcher, utils, USER_AGENT, TIMEOUT
+from .. import fetcher, utils, USER_AGENT, TIMEOUT
 
 MAX_SEEK_SIZE = 64 << 10
 

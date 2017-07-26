@@ -1,12 +1,14 @@
-__author__ = 'Nitori'
-
 from functools import partial
 
 import re
 import requests
 from types import GeneratorType
 import bs4
-bs4.BeautifulSoup = partial(bs4.BeautifulSoup, features='lxml')
+try:
+    import lxml
+    bs4.BeautifulSoup = partial(bs4.BeautifulSoup, features='lxml')
+except ImportError:
+    bs4.BeautifulSoup = partial(bs4.BeautifulSoup, features='html.parser')
 
 __version__ = (1, 1)
 USER_AGENT = 'Shanghai/{} by LarryPete'.format(

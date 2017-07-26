@@ -1,10 +1,8 @@
-__author__ = 'Nitori'
-
 from contextlib import closing
 import hashlib
 
 import requests
-from . import fetcher, utils
+from .. import fetcher, utils
 
 MAX_SEEK_SIZE = 2 << 20  # 2 MiB
 

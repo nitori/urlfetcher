@@ -1,16 +1,9 @@
-__author__ = 'Nitori'
-
-from contextlib import closing
-import traceback
-import hashlib
-import struct
-import sys
 import io
 
 import enzyme
 import requests
 
-from . import fetcher, utils
+from .. import fetcher, utils
 
 
 class HTTPBytesReader:
