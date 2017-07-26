@@ -177,7 +177,7 @@ def fetch(url, head):
         r = likes / total
         lcount = int(r*20)
         dcount = 20-lcount
-        parts.append('Rating: {}{}'.format('#'*lcount, '.'*dcount))
+        parts.append('Rating: {}{}'.format('♥'*lcount, '♡'*dcount))
 
     return '\x02YouTube:\x02 ' + (' | '.join(str(part) for part in parts))
 
