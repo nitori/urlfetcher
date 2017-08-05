@@ -40,12 +40,13 @@ def fetch(url, head):
         'svg': 'image/svg',
     }
 
-    collect = []
-    collect.append('{}x{}'.format(width, height))
-    collect.append(mimetype.get(img_format.lower(), img_format.lower()))
+    collect = [
+        '{}x{}'.format(width, height),
+        mimetype.get(img_format.lower(), img_format.lower()),
+    ]
 
     if content_length is not None:
         collect.append('size: {}'.format(utils.format_size(int(content_length))))
 
-    return 'Image: ' + (' | '.join(collect))
+    return 'Image', ' | '.join(collect)
 

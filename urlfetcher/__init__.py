@@ -57,9 +57,12 @@ class Fetcher:
                         next(gen)
                     except StopIteration as return_result:
                         result = return_result.value
-                    if not isinstance(result, str):
-                        raise TypeError('Expected type {} not {}'.format(
-                            str, type(result)))
+                    if not isinstance(result, (str, tuple)):
+                        raise TypeError('Expected type {} not {}'.format(str, type(result)))
+
+                    if isinstance(result, tuple):
+                        name, result = result
+                        result = '\x02{}:\x02 {}'.format(name, result)
 
                     if redirected_to is not None:
                         if len(redirected_to) <= 150:

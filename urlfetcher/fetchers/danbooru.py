@@ -107,7 +107,7 @@ def fetch(url, head):
     # if file_url is not None:
     #     collect.append(urljoin(url, file_url))
 
-    return '\x02danbooru:\x02 ' + (' | '.join(collect))
+    return 'Danbooru', ' | '.join(collect)
 
 
 def tag_joiner(intags):

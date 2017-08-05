@@ -30,17 +30,4 @@ def fetch(url, head):
 
     collect = [page_title]
 
-    """
-    full_content_length = 0
-    for img_tags in soup.find_all('img'):
-        src = img_tags.get('src', None)
-        if src is not None:
-            img_url = urljoin(url, src)
-            head = requests.head(img_url)
-            full_content_length += int(head.headers.get('content-length', 0))
-
-    if full_content_length > 0:
-        collect.append('estimated size: {}'.format(utils.format_size(full_content_length)))
-    """
-
-    return 'Website: ' + (' | '.join(collect))
+    return 'Website', ' | '.join(collect)

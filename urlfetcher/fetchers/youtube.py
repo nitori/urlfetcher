@@ -168,23 +168,19 @@ def fetch(url, head):
             parts.append(duration_str)
 
     if views is not None:
-        parts.append('Views: {}'.format(views))
+        parts.append('{} views'.format(views))
 
     if dislikes is not None and likes is not None:
+        bar_length = 10
         dislikes = int(dislikes)
         likes = int(likes)
         total = dislikes + likes
         r = likes / total
-        lcount = int(round(r*20))
-        dcount = 20-lcount
-        # 8===>   |
-        # 8=======|> ~ ~
-        if dcount > 0:
-            parts.append('Rating: 8{}>{}|'.format('='*lcount, ' '*(dcount-1)))
-        else:
-            parts.append('Rating: 8{}|> ~ ~'.format('='*lcount))
+        like_str = '|' * int(round(r * bar_length))
+        dislike_str = '|' * (bar_length - len(like_str))
+        parts.append('\x0309,09{}\x0304,04{}\x0f'.format(like_str, dislike_str))
 
-    return '\x02YouTube:\x02 ' + (' | '.join(str(part) for part in parts))
+    return 'YouTube', ' | '.join(str(part) for part in parts)
 
 
 
