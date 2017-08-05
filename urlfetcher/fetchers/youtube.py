@@ -180,7 +180,7 @@ def fetch(url, head):
         dislike_str = '|' * (bar_length - len(like_str))
         parts.append('\x0309,09{}\x0304,04{}\x0f'.format(like_str, dislike_str))
 
-    return 'YouTube', ' | '.join(str(part) for part in parts)
+    return 'YouTube', parts
 
 
 

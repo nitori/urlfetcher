@@ -138,4 +138,4 @@ def fetch(url, head):
                 tocollect.append('language: {}'.format(audio.language))
             collect.append('Audio: {}'.format(' - '.join(tocollect)))
 
-    return 'Video', '{}'.format(' \x02|\x02 '.join(collect))
+    return 'Video', collect

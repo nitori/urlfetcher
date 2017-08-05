@@ -61,8 +61,9 @@ class Fetcher:
                         raise TypeError('Expected type {} not {}'.format(str, type(result)))
 
                     if isinstance(result, tuple):
-                        name, result = result
-                        result = '\x02{}:\x02 {}'.format(name, result)
+                        name, parts = result
+                        result = '\x02{}:\x02 {}'.format(
+                            name, ' \x02|\x02 '.join(parts))
 
                     if redirected_to is not None:
                         if len(redirected_to) <= 150:

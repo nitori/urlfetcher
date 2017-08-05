@@ -48,5 +48,5 @@ def fetch(url, head):
     if content_length is not None:
         collect.append('size: {}'.format(utils.format_size(int(content_length))))
 
-    return 'Image', ' | '.join(collect)
+    return 'Image', collect
 

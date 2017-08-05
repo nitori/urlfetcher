@@ -49,10 +49,10 @@ def fetch(url, head):
         if file_length:
             collect.append('Size: {}'.format(utils.format_size(file_length)))
 
-    return 'Torrent', '{}'.format(' \x02|\x02 '.join(collect))
+    return 'Torrent', collect
 
 
-class TorrentFile():
+class TorrentFile:
 
     def __init__(self):
         self.data = {}

@@ -30,4 +30,4 @@ def fetch(url, head):
 
     collect = [page_title]
 
-    return 'Website', ' | '.join(collect)
+    return 'Website', collect
