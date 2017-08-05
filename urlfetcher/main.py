@@ -22,4 +22,4 @@ def main():
         logging.exception(e)
         print('{}: {!s} (maybe corrupt or to big)'.format(type(e).__name__, e))
     else:
-        print(result)
+        print(' '.join(result.split()))
