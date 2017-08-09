@@ -176,8 +176,8 @@ def fetch(url, head):
         likes = int(likes)
         total = dislikes + likes
         r = likes / total
-        like_str = '|' * int(round(r * bar_length))
-        dislike_str = ':' * (bar_length - len(like_str))
+        like_str = '#' * int(round(r * bar_length))
+        dislike_str = '.' * (bar_length - len(like_str))
         parts.append('\x0309,09{}\x0304,04{}\x0f'.format(like_str, dislike_str))
 
     return 'YouTube', parts
