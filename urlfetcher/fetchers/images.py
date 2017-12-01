@@ -50,8 +50,12 @@ def fetch(url, head):
         collect.append('size: {}'.format(utils.format_size(int(content_length))))
 
     vision = test_google_vision(url)
-    if vision:
-        collect.append(vision)
+    if isinstance(vision, tuple) and len(vision) == 2:
+        tags, nsfw = vision
+        if nsfw:
+            collect.append(', '.join(nsfw))
+        if tags:
+            collect.append(', '.join(tags))
 
     return 'Image', collect
 
@@ -64,6 +68,7 @@ def test_google_vision(image_url):
             },
             'features': [
                 {'type': 'LABEL_DETECTION', 'maxResults': VISION_MAXRESULTS},
+                {'type': 'SAFE_SEARCH_DETECTION'},
             ],
         }]
     }
@@ -81,8 +86,28 @@ def test_google_vision(image_url):
                 return 'Error: {}'.format(data['responses'][0]['error']['message'])
 
         tags = []
+        nsfw = []
+        trigger_nsfw = ('possible', 'likely', 'very_likely', 'unknown')
+
         for response in data['responses']:
             for annotation in response['labelAnnotations']:
                 tags.append(annotation['description'])
-        return ', '.join(tags)
+
+            # Unknown, Very Unlikely, Unlikely, Possible, Likely, and Very Likely
+            safe_search = response.get('safeSearchAnnotation', {})
+
+            # "safeSearchAnnotation": {
+            #     "adult": "UNLIKELY",
+            #     "spoof": "VERY_UNLIKELY",
+            #     "medical": "VERY_UNLIKELY",
+            #     "violence": "VERY_UNLIKELY"
+            # },
+
+            for key in safe_search:
+                value = safe_search[key].lower()
+                if value in trigger_nsfw:
+                    value = value.replace('_', ' ')
+                    nsfw.append('\002{}:\002 {}'.format(key.title(), value.title()))
+
+        return tags, nsfw
     return 'Error: Unsupported response type: {}'.format(r.status_code)
