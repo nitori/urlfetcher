@@ -1,4 +1,5 @@
 from contextlib import closing
+from urllib.parse import urljoin
 import io
 
 # requires Pillow
@@ -20,8 +21,15 @@ def fetch(url, head):
         yield False
         return
 
+    base_url = urljoin(url, '/')
+    headers = {
+        'Referer': base_url,
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
+                      '(KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
+    }
+
     collect = []
-    response = requests.get(url, stream=True)
+    response = requests.get(url, stream=True, headers=headers)
     if response.status_code // 100 == 2:
         with closing(response) as stream:
             buf = b''
