@@ -20,16 +20,51 @@ def fetch(url, head):
         yield False
         return
 
-    with closing(requests.get(url, stream=True)) as stream:
-        buf = b''
-        for chunk in stream.iter_content(8<<10):
-            buf += chunk
-            if len(buf) >= MAX_SEEK_SIZE:
-                break
+    collect = []
+    response = requests.get(url, stream=True)
+    if response.status_code // 100 == 2:
+        with closing(response) as stream:
+            buf = b''
+            for chunk in stream.iter_content(8 << 10):
+                buf += chunk
+                if len(buf) >= MAX_SEEK_SIZE:
+                    break
+        fp = io.BytesIO(buf)
 
-    fp = io.BytesIO(buf)
-    im = Image.open(fp)
+        try:
+            im = Image.open(fp)
+        except OSError:
+            if buf.startswith(b'GIF87a') or buf.startswith(b'GIF89a'):
+                collect.append('image/gif')
+            elif buf.startswith(b'\xFF\xD8'):
+                collect.append('image/jpeg')
+            elif buf.startswith(b'\x89PNG\r\n\x1a\n'):
+                collect.append('image/png')
+            elif buf.lstrip().lower().startswith(b'<svg'):
+                collect.append('image/svg')
+            else:
+                collect.append('Unknown format')
+        else:
+            get_image_data(collect, im)
 
+        if content_length is not None:
+            collect.append('size: {}'.format(utils.format_size(int(content_length))))
+    else:
+        # non 2xx status code
+        collect.append('Received status code {}'.format(response.status_code))
+
+    vision = test_google_vision(url)
+    if isinstance(vision, tuple) and len(vision) == 2:
+        tags, nsfw = vision
+        if nsfw:
+            collect.append(', '.join(nsfw))
+        if tags:
+            collect.append(', '.join(tags))
+
+    return 'Image', collect
+
+
+def get_image_data(collect, im: Image):
     width, height = im.size
     img_format = im.format
 
@@ -41,23 +76,8 @@ def fetch(url, head):
         'svg': 'image/svg',
     }
 
-    collect = [
-        '{}x{}'.format(width, height),
-        mimetype.get(img_format.lower(), img_format.lower()),
-    ]
-
-    if content_length is not None:
-        collect.append('size: {}'.format(utils.format_size(int(content_length))))
-
-    vision = test_google_vision(url)
-    if isinstance(vision, tuple) and len(vision) == 2:
-        tags, nsfw = vision
-        if nsfw:
-            collect.append(', '.join(nsfw))
-        if tags:
-            collect.append(', '.join(tags))
-
-    return 'Image', collect
+    collect.append('{}x{}'.format(width, height))
+    collect.append(mimetype.get(img_format.lower(), img_format.lower()))
 
 
 def test_google_vision(image_url):
