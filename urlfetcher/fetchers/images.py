@@ -5,7 +5,7 @@ import io
 from PIL import Image
 import requests
 from .. import fetcher, utils
-from ..secrets import VISION_APIKEY, VISION_REFERER
+from ..secrets import VISION_APIKEY, VISION_REFERER, VISION_MAXRESULTS
 
 MAX_SEEK_SIZE = 64 << 10
 
@@ -63,7 +63,7 @@ def test_google_vision(image_url):
                 'source': {'imageUri': image_url},
             },
             'features': [
-                {'type': 'LABEL_DETECTION', 'maxResults': 10},
+                {'type': 'LABEL_DETECTION', 'maxResults': VISION_MAXRESULTS},
             ],
         }]
     }
@@ -83,6 +83,6 @@ def test_google_vision(image_url):
         tags = []
         for response in data['responses']:
             for annotation in response['labelAnnotations']:
-                tags.append('{} ({:.1f}%)'.format(annotation['description'], annotation['score'] * 100))
+                tags.append(annotation['description'])
         return ', '.join(tags)
     return 'Error: Unsupported response type: {}'.format(r.status_code)
