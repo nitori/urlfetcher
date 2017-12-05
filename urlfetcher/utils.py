@@ -2,10 +2,10 @@ import math
 
 
 def format_size(size):
-    prefixes = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB']
+    prefixes = ['', '*2^10', '*2^20', '*2^30', '*2^40', '*2^50', '*2^60']
     exp = int(math.log(size, 1024))
     exp = min(exp, len(prefixes) - 1)
-    return '{:.1f} {}'.format(size/(1024**exp), prefixes[exp])
+    return '{:.1f}{} Bytes'.format(size/(1024**exp), prefixes[exp])
 
 
 def format_duration(seconds):
