@@ -11,5 +11,6 @@ enzyme==0.4.1
 idna==2.5                 # via requests
 olefile==0.44             # via pillow
 pillow==4.2.1
+pytz==2017.3
 requests==2.18.2
 urllib3==1.22             # via requests
