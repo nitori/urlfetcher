@@ -1,5 +1,6 @@
 import bs4
 import requests
+import chardet
 from .. import fetcher, utils, USER_AGENT, TIMEOUT
 
 MAX_SEEK_SIZE = 64 << 10
@@ -19,9 +20,11 @@ def fetch(url, head):
         timeout=TIMEOUT,
         headers={'User-Agent': USER_AGENT})
     if 'charset' not in content_type.lower():
-        soup = bs4.BeautifulSoup(response.content)
+        detected = chardet.detect(response.content)
+        text = response.content.decode(detected.get('encoding', 'utf-8'), 'replace')
     else:
-        soup = bs4.BeautifulSoup(response.text)
+        text = response.text
+    soup = bs4.BeautifulSoup(text)
     title = soup.title
     if title is not None:
         page_title = ' '.join(title.text.split())
