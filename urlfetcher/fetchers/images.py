@@ -50,6 +50,9 @@ def fetch(url, head):
                 collect.append('image/png')
             elif buf.lstrip().lower().startswith(b'<svg'):
                 collect.append('image/svg')
+            elif buf.lstrip().lower().startswith((b'<?xml', b'<!')):
+                if b'<svg' in buf.lower():
+                    collect.append('image/svg')
             else:
                 collect.append('Unknown format')
         else:
