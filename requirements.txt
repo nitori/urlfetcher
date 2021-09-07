@@ -14,7 +14,7 @@ enzyme==0.4.1
     # via -r requirements.in
 idna==2.5
     # via requests
-pillow==8.2.0
+pillow==8.3.2
     # via -r requirements.in
 pytz==2017.3
     # via -r requirements.in
